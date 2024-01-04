@@ -48,6 +48,11 @@ export type Message = {
     delete: boolean
 }
 
+export type WithID<R> = {
+    id: string,
+    value: R
+};
+
 export type SquareReivewCard = Pick<Coop, 'company' | 'position' | 'rate'>
 export type RectReviewCard = Pick<Coop, 'company' | 'position' | 'rate' | 'duration' | 'location' | 'review'>
 

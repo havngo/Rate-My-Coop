@@ -33,7 +33,7 @@ app.get('/api/coops', async (_: any, res: any) => {
     res.status(200).send(response);
 })
 
-app.post('api/users', async (req: any, res: any) => {
+app.post('/api/users', async (req: any, res: any) => {
     
 })
 
