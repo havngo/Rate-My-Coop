@@ -1,5 +1,4 @@
-import { StyleSheet } from 'react-native';
-import { SafeAreaView, FlatList, Pressable, Button} from 'react-native';
+import { StyleSheet, SafeAreaView, FlatList, Pressable} from 'react-native';
 import { Text, View } from '../../components/Themed';
 import { Coop, SquareReivewCard } from '../../components/types';
 import { Link, Stack } from 'expo-router';
