@@ -1,6 +1,6 @@
 import * as express from "express"
 import { db } from "./dbModel"
-import { DbTable } from "./types"
+import { Coop, DbTable, User } from "./types"
 
 import * as dotenv from "dotenv";
 
@@ -24,7 +24,7 @@ app.get('/', (_: any, res: any) => {
     res.send('Welcome!~')
 })
 app.get('/api/users', async (_: any, res: any) => {
-    const response = await db.getAll(DbTable.USER);
+  const response = await db.getAll(DbTable.USER);
     res.status(200).send(response);
 })
 
@@ -34,7 +34,13 @@ app.get('/api/coops', async (_: any, res: any) => {
 })
 
 app.post('/api/users', async (req: any, res: any) => {
-    
+    const response = await db.createUser(req.body as User);
+    res.status(200).send(response);
+})
+
+app.post('/api/coops', async (req: any, res: any) => {
+  const response = await db.createCoop(req.body as Coop);
+  res.status(200).send(response);
 })
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
