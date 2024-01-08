@@ -33,13 +33,16 @@ app.get('/api/coops', async (_: any, res: any) => {
     res.status(200).send(response);
 })
 
-app.post('/api/users', async (req: any, res: any) => {
-    const response = await db.createUser(req.body as User);
-    res.status(200).send(response);
-})
 
 app.post('/api/coops', async (req: any, res: any) => {
-  const response = await db.createCoop(req.body as Coop);
+  console.log("hit post coops endpoint", req.body)
+  const response = await db.createCoop(req.body);
+  res.status(200).send(response);
+})
+
+app.post('/api/users', async (req: any, res: any) => {
+  console.log("hit post users endpoint", req.body)
+  const response = await db.createUser(JSON.parse(req.body) as User);
   res.status(200).send(response);
 })
 

@@ -3,6 +3,7 @@ import { View, Text } from "../../components/Themed";
 import { TextInput, Button, StyleSheet, ScrollView } from "react-native";
 import { Formik } from "formik";
 import StarRating from "react-native-star-rating";
+import { Coop } from "../../components/types";
 
 export default function AddScreen() {
     const [company, setCompany] = useState("");
@@ -20,7 +21,7 @@ export default function AddScreen() {
         initialValues={{}}
         onSubmit={values => console.log(values)}
         >
-        {({ handleChange, handleBlur, handleSubmit, values }) => (
+        {() => (
           <View>
             <View style={styles.labelInputContainer}>
               <Text style={styles.labelText}>Company Name</Text>
@@ -131,9 +132,27 @@ export default function AddScreen() {
               </View>
             </View>
 
-            <Button onPress={() => {
-              console.log(company, position, review, overall, culture)
-            }} title="Submit" />
+            <Button 
+              onPress={async () => {
+                console.log(company, position, review, overall, culture)
+                const newReview: Coop = {
+                  company,
+                  position,
+                  review,
+                  rating: {
+                    overall,
+                    workImpact,
+                    location,
+                    compensation,
+                    culture
+                  }
+                }
+                const requestSettings: RequestInit =  { method: 'POST', body: JSON.stringify(newReview), headers: {'Content-Type': 'application/json'}}
+                const response : Response = await fetch('http://10.1.10.170:3000/api/coops', requestSettings)
+                console.log("one???", response.status)
+              }}
+              title="Submit" 
+            />
           </View>
         )}
       </Formik>
@@ -152,8 +171,8 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     alignSelf: 'center',
     justifyContent: 'center',
-    backgroundColor: '#EFEFEF',
-    borderColor: 'black',
+    backgroundColor: 'white',
+    borderColor: 'grey',
     borderWidth: 1,
     width: '90%',
     height: 50,
@@ -173,8 +192,8 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     alignSelf: 'center',
     justifyContent: 'flex-start',
-    backgroundColor: '#EFEFEF',
-    borderColor: 'black',
+    backgroundColor: 'white',
+    borderColor: 'grey',
     borderWidth: 1,
     width: '90%',
     height: 300,
@@ -190,22 +209,6 @@ const styles = StyleSheet.create({
   labelText: {
     fontSize: 18,
     fontWeight: 'bold'
-  },
-
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-    backgroundColor: '#EFEFEF'
-
-  },
-
-  btnGroup: {
-    display: 'flex',
-    flexDirection: 'row',
-    paddingLeft: 15,
-    backgroundColor: '#EFEFEF'
-
   },
 
   btn: {

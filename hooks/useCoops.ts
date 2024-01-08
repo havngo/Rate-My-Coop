@@ -6,7 +6,7 @@ import { Coop, CoopWithID } from '../components/types';
 export const useCoops = async (requestBody: string = "") => {
   const requestSettings =  { method: 'GET', body: requestBody, headers: {'Content-Type': 'application/json'}}
   const resourcesFetcher = async () : Promise<Coop[]> => {
-    const response : Response = await fetch('http://10.0.0.166:3000/api/coops', requestSettings)
+    const response : Response = await fetch('http://10.1.10.170:3000/api/coops', requestSettings)
     const resources : CoopWithID[] = await response.json()
     return resources.map(({coop_id, ...rest}) => ({
       company: rest.company,

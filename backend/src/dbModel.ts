@@ -54,7 +54,7 @@ class Db {
     try {
       const result = await this.pool.query(
         "INSERT INTO coops (company, position, review, rating) VALUES ($1, $2, $3, ($4, $5, $6, $7, $8)) RETURNING *", 
-        [company, position, review, overall, workImpact, compensation, culture]
+        [company, position, review, overall, workImpact, location, compensation, culture]
       )
       console.log(`result is ${result.rows}`)
     } catch (e) {
