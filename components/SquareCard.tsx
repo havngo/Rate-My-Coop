@@ -7,7 +7,7 @@ type SquareCardProps = {
   item: SquareReivewCard;
 };
 const SquareCard = ({ item }: SquareCardProps): JSX.Element => {
-  const { overall, ...optionalRatings } = item.rate;
+  const { overall, ...optionalRatings } = item.rating;
   return (
     <Pressable
       style={{

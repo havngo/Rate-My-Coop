@@ -13,14 +13,14 @@ export type User = {
 export type Coop = {
     company: string, 
     position: string,
-    duration: number, // in weeks
     review: string, 
-    rate: Rating, // out of 5
-    location: string,
+    rating: Rating, // out of 5
+    duration?: number, // in weeks
+    location?: string,
     interview?: Interview,
-    returnOffer: boolean,
-    hide: boolean,
-    dateCreated: number
+    returnOffer?: boolean,
+    hide?: boolean,
+    dateCreated?: number
 }
 
 export type Interview = {
@@ -48,13 +48,10 @@ export type Message = {
     delete: boolean
 }
 
-export type WithID<R> = {
-    id: string,
-    value: R
-};
+export type CoopWithID = {coop_id: number} & Coop
 
-export type SquareReivewCard = Pick<Coop, 'company' | 'position' | 'rate'>
-export type RectReviewCard = Pick<Coop, 'company' | 'position' | 'rate' | 'duration' | 'location' | 'review'>
+export type SquareReivewCard = Pick<Coop, 'company' | 'position' | 'rating'>
+export type RectReviewCard = Pick<Coop, 'company' | 'position' | 'rating' | 'duration' | 'location' | 'review'>
 
 export enum RateCategory {
     workImpact = "Work Impact",

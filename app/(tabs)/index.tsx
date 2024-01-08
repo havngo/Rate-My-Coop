@@ -1,65 +1,11 @@
 import { StyleSheet } from 'react-native';
 import { SafeAreaView, FlatList, Pressable, Button} from 'react-native';
 import { Text, View } from '../../components/Themed';
-import { SquareReivewCard } from '../../components/types';
+import { Coop, SquareReivewCard } from '../../components/types';
 import { Link, Stack } from 'expo-router';
 import SquareCard from '../../components/SquareCard';
-import React from 'react';
-
-const sections: Section[] = [
-  {
-    title: "All Reviews",
-    elements: Array(5).fill({
-      company: "Facebook",
-      position: "Software Engineering",
-      rate: {
-        overall: 4,
-        workImpact: 4,
-        location: 3,
-        compensation: 5
-      }
-    })
-  },
-  {
-    title: "Latest Reviews",
-    elements: Array(5).fill({
-      company: "Facebook",
-      position: "Software Engineering",
-      rate: {
-        overall: 4,
-        workImpact: 4,
-        location: 3,
-        compensation: 5
-      }
-    })
-  },
-  {
-    title: "Top Companies",
-    elements: Array(5).fill({
-      company: "Facebook",
-      position: "Software Engineering",
-      rate: {
-        overall: 4,
-        workImpact: 4,
-        location: 3,
-        compensation: 5
-      }
-    })
-  },
-  {
-    title: "Recently Viewed",
-    elements: Array(5).fill({
-      company: "Facebook",
-      position: "Software Engineering",
-      rate: {
-        overall: 4,
-        workImpact: 4,
-        location: 3,
-        compensation: 5
-      }
-    })
-  }
-]
+import React, { useEffect, useState } from 'react';
+import { useCoops } from '../../hooks/useCoops';
 
 const renderSection = (section: Section) => {
   return (
@@ -102,6 +48,21 @@ type Section = {
 
 export default function HomeScreen() {
   let flatListRef: FlatList<Section>;
+  const [sections, setSections] = useState<Section[]>();
+  const [latestReviews, setLatestReviews] = useState<Coop[]>()
+
+  useEffect(() => {
+    const getCoops = async () => {
+      const { requestedCoops } = await useCoops()
+      setLatestReviews(requestedCoops)
+      const categories = ["All Reviews", "Latest Reviews", "Top Companies", "Recently Viewed"]
+      setSections(categories.map(c => ({
+        title: c,
+        elements: requestedCoops
+      })))
+    };
+    getCoops()
+  }, [])
   
   return (
     <SafeAreaView style={styles.container}>
