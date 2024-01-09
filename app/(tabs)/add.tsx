@@ -5,56 +5,98 @@ import { Formik } from "formik";
 import StarRating from "react-native-star-rating";
 import { Coop } from "../../components/types";
 
-export default function AddScreen() {
-    const [company, setCompany] = useState("");
-    const [position, setPosition] = useState("");
-    const [review, setReview] = useState("");
-    const [overall, setOverall] = useState(0);
-    const [workImpact, setWorkImpact] = useState(0);
-    const [culture, setCulture] = useState(0);
-    const [location, setLocation] = useState(0);
-    const [compensation, setCompensation] = useState(0);
-    
+type FormValues = {company: string, review: string, position: string, overall: number, workImpact: number, location: number, compensation: number, culture: number}
+const initialValues: FormValues = { company: '', position: '', review: '', overall: 0, workImpact: 0, compensation: 0, location: 0, culture: 0}
+
+const submit = async (values: FormValues) => {
+  const {company, review, position, overall} = values;
+  if (!company || !review || !position || !overall) {
+    return;
+  } 
+  console.log('submitting...')
+  const newReview: Coop = {
+    company,
+    position,
+    review,
+    rating: {
+      overall,
+      workImpact: values.workImpact,
+      location: values.location,
+      compensation: values.compensation,
+      culture: values.culture
+    }
+  }
+  const requestSettings: RequestInit =  { method: 'POST', body: JSON.stringify(newReview), headers: {'Content-Type': 'application/json'}}
+  const response : Response = await fetch(`http://10.0.0.166:3000/api/coops`, requestSettings);
+  console.log(response)
+  values = initialValues;
+}
+
+const validate = (values: FormValues) => {
+  const errors: any = {};
+  if (!values.company) {
+    errors.company = 'Required'
+  }
+  if (!values.position) {
+    errors.position = 'Required'
+  }
+  if (!values.review) {
+    errors.review = 'Required'
+  }
+  if (!values.overall || values.overall === 0) {
+    errors.ovaral = 'Required'
+  }
+
+  return errors;
+}
+
+export default function AddScreen() {    
     return (
     <ScrollView>
       <Formik
-        initialValues={{}}
-        onSubmit={values => console.log(values)}
+        initialValues={initialValues}
+        onSubmit={submit}
+        validate={validate}
         >
-        {() => (
+        {({ handleChange, handleSubmit, values, setFieldValue, errors }) => (
           <View>
             <View style={styles.labelInputContainer}>
               <Text style={styles.labelText}>Company Name</Text>
               <View style={styles.inputContainer}>
                 <TextInput
                   style={styles.inputText}
-                  onChangeText={setCompany}
-                  value={company}
+                  onChangeText={handleChange('company')}
+                  value={values.company}
                   placeholder="Enter company name..."
                 />
               </View>
+              {errors.company && <Text style={styles.errorText}>{errors.company}</Text> }
             </View>
+
             <View style={styles.labelInputContainer}>
               <Text style={styles.labelText}>Position</Text>
                 <View style={styles.inputContainer}>
                   <TextInput
                     style={styles.inputText}
-                    onChangeText={setPosition}
-                    value={position}
+                    onChangeText={handleChange('position')}
+                    value={values.position}
                     placeholder="Enter coop position..."
                   />
                 </View>
+                {errors.position && <Text style={styles.errorText}>{errors.position}</Text> }
             </View>
+
             <View style={styles.labelInputContainer}>
               <Text style={styles.labelText}>Review</Text>
               <View style={styles.longInputContainer}>
                 <TextInput
                   style={styles.inputText}
-                  onChangeText={setReview}
-                  value={review}
+                  onChangeText={handleChange('review')}
+                  value={values.review}
                   placeholder="Write your review..."
                 />
               </View>
+              {errors.review && <Text style={styles.errorText}>{errors.review}</Text> }
             </View>
 
             <View style={styles.labelInputContainer}>
@@ -63,13 +105,14 @@ export default function AddScreen() {
                 <StarRating
                         animation="swing"
                         maxStars={5}
-                        rating={overall}
+                        rating={values.overall}
                         fullStarColor="#F5D980"
                         emptyStarColor="#F5D980"
                         starSize={55}
-                        selectedStar={setOverall}
+                        selectedStar={(star) => setFieldValue('overall', star)}
                         />
               </View>
+              {errors.overall && <Text style={styles.errorText}>{errors.overall}</Text> }
             </View>
 
             <View style={styles.labelInputContainer}>
@@ -78,11 +121,11 @@ export default function AddScreen() {
                 <StarRating
                         animation="swing"
                         maxStars={5}
-                        rating={workImpact}
+                        rating={values.workImpact}
                         fullStarColor="#F5D980"
                         emptyStarColor="#F5D980"
                         starSize={55}
-                        selectedStar={setWorkImpact}
+                        selectedStar={(star) => setFieldValue('workImpact', star)}
                         />
               </View>
             </View>
@@ -93,11 +136,11 @@ export default function AddScreen() {
                 <StarRating
                         animation="swing"
                         maxStars={5}
-                        rating={location}
+                        rating={values.location}
                         fullStarColor="#F5D980"
                         emptyStarColor="#F5D980"
                         starSize={55}
-                        selectedStar={setLocation}
+                        selectedStar={(star) => setFieldValue('location', star)}
                         />
               </View>
             </View>
@@ -108,11 +151,11 @@ export default function AddScreen() {
                 <StarRating
                         animation="swing"
                         maxStars={5}
-                        rating={compensation}
+                        rating={values.compensation}
                         fullStarColor="#F5D980"
                         emptyStarColor="#F5D980"
                         starSize={55}
-                        selectedStar={setCompensation}
+                        selectedStar={(star) => setFieldValue('compensation', star)}
                         />
               </View>
             </View>
@@ -123,36 +166,20 @@ export default function AddScreen() {
                 <StarRating
                         animation="swing"
                         maxStars={5}
-                        rating={culture}
+                        rating={values.culture}
                         fullStarColor="#F5D980"
                         emptyStarColor="#F5D980"
                         starSize={55}
-                        selectedStar={setCulture}
+                        selectedStar={(star) => setFieldValue('culture', star)}
                         />
               </View>
             </View>
-
-            <Button 
-              onPress={async () => {
-                console.log(company, position, review, overall, culture)
-                const newReview: Coop = {
-                  company,
-                  position,
-                  review,
-                  rating: {
-                    overall,
-                    workImpact,
-                    location,
-                    compensation,
-                    culture
-                  }
-                }
-                const requestSettings: RequestInit =  { method: 'POST', body: JSON.stringify(newReview), headers: {'Content-Type': 'application/json'}}
-                const response : Response = await fetch('http://10.1.10.170:3000/api/coops', requestSettings)
-                console.log("one???", response.status)
-              }}
-              title="Submit" 
-            />
+            <View style={styles.btn}>
+              <Button 
+                onPress={() => handleSubmit()}
+                title="Submit" 
+              />
+            </View>
           </View>
         )}
       </Formik>
@@ -206,25 +233,33 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 
+  errorText: {
+    fontSize: 14,
+    color: 'red',
+    fontStyle: 'italic',
+    alignSelf: 'flex-end'
+  },
+
   labelText: {
     fontSize: 18,
     fontWeight: 'bold'
   },
 
   btn: {
+    alignSelf: 'center',
     fontSize: 12,
     borderRadius: 8,
     flex: 1,
     border: 1,
     backgroundColor: 'white',
-    marginVertical: 15,
+    marginVertical: 25,
     height: 40,
     justifyContent: 'center',
     alignItems: 'center',
     width: 120,
     shadowColor: 'black',
     shadowOpacity: 0.3,
-    shadowOffset: {width: 0, height: 5}
+    shadowOffset: {width: 0, height: 5},
   },
 
 });
